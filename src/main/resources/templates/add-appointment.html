@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Yeni Randevu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Randevu Planla</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/appointments/add}" th:object="${appointment}" method="post">
+
+                        <div class="mb-3">
+                            <label class="form-label">Doktor Seçin</label>
+                            <select th:field="*{doctorId}" class="form-select" required>
+                                <option value="">-- Doktor Seçiniz --</option>
+                                <option th:each="doc : ${doctors}"
+                                        th:value="${doc.id}"
+                                        th:text="${doc.name} + ' (' + ${doc.specialty} + ')'"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Hasta Seçin</label>
+                            <select th:field="*{patientId}" class="form-select" required>
+                                <option value="">-- Hasta Seçiniz --</option>
+                                <option th:each="pat : ${patients}"
+                                        th:value="${pat.id}"
+                                        th:text="${pat.name}"></option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Randevu Tarihi</label>
+                            <input type="datetime-local" th:field="*{appointmentDate}" class="form-control" required>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success">Randevuyu Kaydet</button>
+                            <a href="/appointments" class="btn btn-outline-secondary">İptal</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

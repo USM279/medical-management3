@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Management - Anasayfa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .panel-card { transition: transform 0.2s; }
+        .panel-card:hover { transform: scale(1.02); }
+    </style>
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-primary shadow-sm mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="/">Medical Management Portal</a>
+        <div class="d-flex align-items-center text-white">
+            <span class="me-3">Hoş geldin, <strong sec:authentication="name">Kullanıcı</strong></span>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-danger btn-sm">Çıkış Yap</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row justify-content-center">
+
+        <div class="col-md-10" sec:authorize="hasRole('ADMIN')">
+            <div class="card border-primary shadow panel-card">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">Yönetim Paneli (Admin)</h4>
+                </div>
+                <div class="card-body py-5 text-center">
+                    <p class="lead mb-4">Sistemdeki tüm kayıtları yönetebilir, yeni doktor veya hasta ekleyebilirsiniz.</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="/doctors" class="btn btn-primary btn-lg px-4">Doktor Yönetimi</a>
+                        <a href="/patients" class="btn btn-success btn-lg px-4">Hasta Yönetimi</a>
+                        <a href="/appointments" class="btn btn-info btn-lg px-4 text-white">Randevu Yönetimi</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-10" sec:authorize="hasRole('USER')">
+            <div class="card border-success shadow panel-card">
+                <div class="card-header bg-success text-white text-center">
+                    <h4 class="mb-0">Hasta Hizmet Portalı</h4>
+                </div>
+                <div class="card-body py-5 text-center">
+                    <p class="lead mb-4">Randevularınızı takip edebilir ve uzman doktor listemize ulaşabilirsiniz.</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="/appointments" class="btn btn-success btn-lg px-4">Randevularım</a>
+                        <a href="/doctors" class="btn btn-outline-success btn-lg px-4">Doktorlarımız</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<footer class="mt-5 py-4 text-center text-muted border-top">
+    <div class="container">
+        <p class="mb-0">&copy; 2026 Medical Management System</p>
+        <small>Geliştirici: <strong>Muhammet Karaman</strong></small>
+    </div>
+</footer>
+
+</body>
+</html>
