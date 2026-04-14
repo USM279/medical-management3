@@ -45,6 +45,21 @@ public class AppointmentController {
     }
 
 
+    @GetMapping("/edit/{id}")
+    public String showEditAppointmentForm(@PathVariable Long id, Model model) {
+        model.addAttribute("appointment", appointmentService.getAppointmentById(id));
+        model.addAttribute("doctors", doctorService.getAllDoctors());
+        model.addAttribute("patients", patientService.getAllPatients());
+        return "edit-appointment";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String editAppointment(@PathVariable Long id,
+                                  @ModelAttribute("appointment") AppointmentDTO appointmentDTO) {
+        appointmentService.updateAppointment(id, appointmentDTO);
+        return "redirect:/appointments";
+    }
+
     @GetMapping("/delete/{id}")
     public String deleteAppointment(@PathVariable Long id) {
         appointmentService.deleteAppointment(id);

@@ -8,6 +8,8 @@ import com.medical.medicalmanagement.repository.AppointmentRepository;
 import com.medical.medicalmanagement.repository.DoctorRepository;
 import com.medical.medicalmanagement.repository.PatientRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,14 +44,47 @@ public class AppointmentService {
         appointment.setPatient(patient);
 
         appointmentRepository.save(appointment);
-        log.info("RANDEVU OLUŞTURULDU: Doktor {} -> Hasta {} | Tarih: {}",
-                doctor.getName(), patient.getName(), dto.getAppointmentDate());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        log.info("NEW APPOINTMENT CREATED: Doctor='{}', Patient='{}', Date='{}', Created by user='{}'",
+                doctor.getName(), patient.getName(), dto.getAppointmentDate(), auth.getName());
     }
 
-    // YENİ: SİLME METODU
+    public void updateAppointment(Long id, AppointmentDTO dto) {
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        appointment.setAppointmentDate(dto.getAppointmentDate());
+
+        Doctor doctor = doctorRepository.findById(dto.getDoctorId())
+                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+        Patient patient = patientRepository.findById(dto.getPatientId())
+                .orElseThrow(() -> new RuntimeException("Patient not found"));
+
+        appointment.setDoctor(doctor);
+        appointment.setPatient(patient);
+
+        appointmentRepository.save(appointment);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        log.info("APPOINTMENT UPDATED: ID={}, Updated by user='{}'", id, auth.getName());
+    }
+
     public void deleteAppointment(Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         appointmentRepository.deleteById(id);
-        log.info("RANDEVU IPTAL: ID'si {} olan randevu sistemden silindi.", id);
+        log.info("APPOINTMENT DELETED: ID={}, Deleted by user='{}'", id, auth.getName());
+    }
+
+    public AppointmentDTO getAppointmentById(Long id) {
+        Appointment app = appointmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+        AppointmentDTO dto = new AppointmentDTO();
+        dto.setId(app.getId());
+        dto.setAppointmentDate(app.getAppointmentDate());
+        dto.setDoctorId(app.getDoctor().getId());
+        dto.setPatientId(app.getPatient().getId());
+        dto.setDoctorName(app.getDoctor().getName());
+        dto.setPatientName(app.getPatient().getName());
+        return dto;
     }
 
     public List<AppointmentDTO> getAllAppointments() {

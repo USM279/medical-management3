@@ -4,6 +4,8 @@ import com.medical.medicalmanagement.dto.PatientDTO;
 import com.medical.medicalmanagement.entity.Patient;
 import com.medical.medicalmanagement.repository.PatientRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,7 +28,9 @@ public class PatientService {
         patient.setComplaints(patientDTO.getComplaints());
 
         Patient savedPatient = patientRepository.save(patient);
-        log.info("YENI HASTA: Kayıt oluşturuldu. ID: {}, İsim: {}", savedPatient.getId(), savedPatient.getName());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        log.info("NEW PATIENT CREATED: ID={}, Name='{}', Created by user='{}'",
+                savedPatient.getId(), savedPatient.getName(), auth.getName());
     }
 
     // 2. HASTALARI LİSTELEME
@@ -50,13 +54,15 @@ public class PatientService {
         patient.setComplaints(dto.getComplaints());
 
         patientRepository.save(patient);
-        log.info("HASTA GÜNCELLEME: ID: {} olan hasta bilgileri güncellendi.", id);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        log.info("PATIENT UPDATED: ID={}, Updated by user='{}'", id, auth.getName());
     }
 
     // 5. HASTA SİLME
     public void deletePatient(Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         patientRepository.deleteById(id);
-        log.info("HASTA SILINDI: ID'si {} olan hasta sistemden kaldırıldı.", id);
+        log.info("PATIENT DELETED: ID={}, Deleted by user='{}'", id, auth.getName());
     }
 
     // Yardımcı Metod: DTO Çevirici

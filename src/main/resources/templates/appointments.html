@@ -34,9 +34,11 @@
                     <td th:text="${app.patientName}"></td>
                     <td th:text="${#temporals.format(app.appointmentDate, 'dd-MM-yyyy HH:mm')}"></td>
                     <td>
+                        <a th:href="@{/appointments/edit/{id}(id=${app.id})}"
+                           class="btn btn-warning btn-sm me-1">Edit</a>
                         <a th:href="@{/appointments/delete/{id}(id=${app.id})}"
                            class="btn btn-danger btn-sm"
-                           onclick="return confirm('Bu randevuyu iptal etmek istediğinize emin misiniz?')">İptal Et</a>
+                           onclick="return confirm('Are you sure you want to cancel this appointment?')">Cancel</a>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(appointments)}">

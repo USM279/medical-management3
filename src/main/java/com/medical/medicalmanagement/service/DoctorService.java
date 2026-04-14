@@ -4,6 +4,8 @@ import com.medical.medicalmanagement.dto.DoctorDTO;
 import com.medical.medicalmanagement.entity.Doctor;
 import com.medical.medicalmanagement.repository.DoctorRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,7 +37,9 @@ public class DoctorService {
         handleImageUpload(doctor, imageFile);
 
         Doctor savedDoctor = doctorRepository.save(doctor);
-        log.info("YENI KAYIT: Sisteme yeni bir doktor eklendi. ID: {}, İsim: {}", savedDoctor.getId(), savedDoctor.getName());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        log.info("NEW DOCTOR CREATED: ID={}, Name='{}', Created by user='{}'",
+                savedDoctor.getId(), savedDoctor.getName(), auth.getName());
     }
 
     // 2. DOKTORLARI LİSTELEME
@@ -63,13 +67,15 @@ public class DoctorService {
         }
 
         doctorRepository.save(doctor);
-        log.info("GÜNCELLEME: ID: {} olan doktor bilgileri yenilendi.", id);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        log.info("DOCTOR UPDATED: ID={}, Updated by user='{}'", id, auth.getName());
     }
 
     // 5. DOKTOR SİLME
     public void deleteDoctor(Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         doctorRepository.deleteById(id);
-        log.info("KAYIT SILINDI: ID'si {} olan doktor kaldırıldı.", id);
+        log.info("DOCTOR DELETED: ID={}, Deleted by user='{}'", id, auth.getName());
     }
 
     // Yardımcı Metod: Resim Yükleme
